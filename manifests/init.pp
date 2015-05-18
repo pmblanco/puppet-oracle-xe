@@ -20,10 +20,21 @@ class oracle-xe (
     group  => root,
   }
 
+  group { 'dba':
+    ensure => present,
+  }
+
+  user { 'oracle':
+    ensure => present,
+    gid    => 'dba',
+  }
+
   file { [ '/u01', '/u01/app', '/u01/app/oracle', '/u01/app/oracle/local']:
     ensure      => directory,
+    owner       => 'oracle',
+    group       => 'dba',
     before      => File['oracle-swap'],
-    refreshonly => true,
+    require     => User['oracle'],
   }
 
   file { 'oracle-swap':
